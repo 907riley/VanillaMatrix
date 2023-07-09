@@ -4,6 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+
+    </style>
+</head>
+<body>
+   <div>
+        <div>
+            <label for="size">Variables:</label>
+            <select name="size" id="variables_select">
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+        </div>
+        <div>
+            <label for="mode">Mode:</label>
+            <select name="mode" id="mode_select">
+                <option value="linear">Linear Equations</option>
+                <option value="inverse">Inverse</option>
+                <option value="determinant">Determinant</option>
+            </select>
+        </div>
+   </div> 
+    <div id="wrapper_rows">
+    </div>
     <script>
         var variables = 3;
         var mode = "system";
@@ -15,41 +40,40 @@
             newRow.className = "wrapper_row";
             newRow.id = "row_" + i;
             console.log(`${i} iteration and ${newRow}`)
+
             for (let j = 0; j < variables; j++) {
-                let newValue = document.createElement('textarea');
+                let newValue = document.createElement('input');
+                newValue.type = "number";
                 newValue.className = "value";
                 newValue.id = i + "_" + j;
                 newRow.appendChild(newValue);
             }
 
-            rowWrapper.appendChild(newRow);
+            rowWrapper.append(newRow);
         }
 
-    </script>
-    <style>
+        function onVariablesChange() {
+            let e = document.getElementById("variables_select");
+            let prevVariables = variables;
+            variables = e.options[e.selectedIndex].value;
 
-    </style>
-</head>
-<body>
-   <div>
-        <div>
-            <label for="size">Variables:</label>
-            <select name="size">
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-            </select>
-        </div>
-        <div>
-            <label for="mode">Mode:</label>
-            <select name="mode">
-                <option value="linear">Linear Equations</option>
-                <option value="inverse">Inverse</option>
-                <option value="determinant">Determinant</option>
-            </select>
-        </div>
-   </div> 
-    <div id="wrapper_rows">
-    </div>
+            if (prevVariables > variables) {
+                // remove rows difference
+            } else if (variables > prevVariables) {
+                // add rows difference
+            }
+        }
+
+        function onModeChange() {
+            let e = document.getElementById("mode_select");
+            mode = e.options[e.selectedIndex].value;
+            console.log(`${mode}`);
+        }
+
+
+        document.getElementById("variables_select").addEventListener("change", onVariablesChange);
+        document.getElementById("mode_select").addEventListener("change", onModeChange);
+
+    </script>
 </body>
 </html>
