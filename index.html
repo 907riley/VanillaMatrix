@@ -90,7 +90,8 @@
 
             while (diff > 0 && rowWrapper.firstChild) {
                 // remove the rows
-                rowWrapper.removeChild(rowWrapper.lastChild)
+                rowWrapper.removeChild(rowWrapper.lastChild);
+                matrix.pop();
                 diff--;
             }
 
