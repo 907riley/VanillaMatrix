@@ -37,6 +37,17 @@
 
         var rowWrapper = document.getElementById("wrapper_rows");
 
+        // setup init display 3 x 3
+        for (let i = 0; i < size; i++) {
+            let newRow = createNewRow(i);
+
+            for (let j = 0; j < size; j++) {
+                newRow.appendChild(createNewValue(i, j));
+            }
+
+            rowWrapper.append(newRow);
+        }
+
         function createNewRow(i) {
             let newRow = document.createElement('div');
 
@@ -52,7 +63,7 @@
             newValue.type = "number";
             newValue.className = "value";
             newValue.id = "row_" + i + "_col_" + j;
-            newValue.value = matrix[i][j];
+            newValue.value = matrix[i][j]
             newValue.onchange = updateValue(i, j, newValue.value)
 
             return newValue;
@@ -60,7 +71,8 @@
 
         function updateValue(i, j, newValue) {
             matrix[i][j] = newValue;
-            console.log(`In change ${prettyPrintMatrix()}`);
+            console.log(`In change at i: ${i} j: ${j}`);
+            prettyPrintMatrix();
             // document.getElementById(`row_${i}_col_${j}`).value = 
         }
 
@@ -73,16 +85,6 @@
                 }
                 console.log(`${i} [ ${row} ]`);
             }
-        }
-
-        for (let i = 0; i < size; i++) {
-            let newRow = createNewRow(i);
-
-            for (let j = 0; j < size; j++) {
-                newRow.appendChild(createNewValue(i, j));
-            }
-
-            rowWrapper.append(newRow);
         }
 
         function removeValues(size, prevVariables) {
@@ -103,6 +105,7 @@
                 // iterate through the number of rows and remove last element
                 for (let i = 0; i < size; i++) {
                     rowWrapper.children.item(i).removeChild(rowWrapper.children.item(i).lastChild);
+                    matrix[i].pop();
                 }
                 diff--;
             }
@@ -117,13 +120,21 @@
             for (let i = 0; i < prevVariables; i++) {
                 // for each new value
                 for (let j = 0; j < diff; j++) {
+                    matrix[i].push(0);
                     rowWrapper.children.item(i).appendChild(createNewValue(i, j + prevVariables))
+                    console.log(`appending ${i} 0`);
                 }
             }
 
             // add new rows
             for (let i = 0; i < diff; i++) {
                 let newRow = createNewRow(i + prevVariables);
+                let newMatrixRow = []
+
+                for (let j = 0; j < size; j++) {
+                    newMatrixRow.push(0);
+                }
+                matrix.push(newMatrixRow);
 
                 for (let j = 0; j < size; j++) {
                     newRow.appendChild(createNewValue(i + prevVariables, j));
@@ -132,7 +143,8 @@
             }
         }
 
-        function onVariablesChange() {
+        function onSizeChange() {
+            console.log("size change");
             let e = document.getElementById("size_select");
             let prevVariables = parseInt(size);
             size = parseInt(e.options[e.selectedIndex].value);
@@ -154,7 +166,7 @@
         }
 
 
-        document.getElementById("size_select").addEventListener("change", onVariablesChange);
+        document.getElementById("size_select").addEventListener("change", onSizeChange);
         document.getElementById("mode_select").addEventListener("change", onModeChange);
 
     </script>
