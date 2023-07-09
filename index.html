@@ -59,6 +59,25 @@
 
             if (prevVariables > variables) {
                 // remove rows difference
+                let diff = prevVariables - variables;
+
+                while (diff > 0 && rowWrapper.firstChild) {
+                    // remove the rows
+                    rowWrapper.removeChild(rowWrapper.lastChild)
+                    diff--;
+                }
+
+                // remove rows differences for columns
+                diff = prevVariables - variables;
+
+                // iterate for how many columns to remove
+                while (diff > 0 && rowWrapper.firstChild) {
+                    // iterate through the number of rows and remove last element
+                    for (let i = 0; i < variables; i++) {
+                        rowWrapper.children.item(i).removeChild(rowWrapper.children.item(i).lastChild);
+                    }
+                    diff--;
+                }
             } else if (variables > prevVariables) {
                 // add rows difference
             }
