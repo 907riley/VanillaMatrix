@@ -11,7 +11,7 @@
 <body>
    <div>
         <div>
-            <label for="size">Variables:</label>
+            <label for="variables_select">Variables:</label>
             <select name="size" id="variables_select">
                 <option value="3">3</option>
                 <option value="4">4</option>
@@ -19,7 +19,7 @@
             </select>
         </div>
         <div>
-            <label for="mode">Mode:</label>
+            <label for="mode_select">Mode:</label>
             <select name="mode" id="mode_select">
                 <option value="linear">Linear Equations</option>
                 <option value="inverse">Inverse</option>
@@ -30,56 +30,99 @@
     <div id="wrapper_rows">
     </div>
     <script>
+
         var variables = 3;
         var mode = "system";
 
         var rowWrapper = document.getElementById("wrapper_rows");
 
-        for (let i = 0; i < variables; i++) {
+        function createNewRow(i) {
             let newRow = document.createElement('div');
+
             newRow.className = "wrapper_row";
             newRow.id = "row_" + i;
-            console.log(`${i} iteration and ${newRow}`)
+
+            return newRow;
+        }
+
+        function createNewValue(i, j) {
+            let newValue = document.createElement('input');
+
+            newValue.type = "number";
+            newValue.className = "value";
+            newValue.id = "row_" + i + "_col_" + j;
+
+            return newValue;
+        }
+
+        for (let i = 0; i < variables; i++) {
+            let newRow = createNewRow(i);
 
             for (let j = 0; j < variables; j++) {
-                let newValue = document.createElement('input');
-                newValue.type = "number";
-                newValue.className = "value";
-                newValue.id = i + "_" + j;
-                newRow.appendChild(newValue);
+                newRow.appendChild(createNewValue(i, j));
             }
 
             rowWrapper.append(newRow);
         }
 
+        function removeValues(variables, prevVariables) {
+            let diff = prevVariables - variables;
+
+            while (diff > 0 && rowWrapper.firstChild) {
+                // remove the rows
+                rowWrapper.removeChild(rowWrapper.lastChild)
+                diff--;
+            }
+
+            // remove rows differences for columns
+            diff = prevVariables - variables;
+
+            // iterate for how many columns to remove
+            while (diff > 0 && rowWrapper.firstChild) {
+                // iterate through the number of rows and remove last element
+                for (let i = 0; i < variables; i++) {
+                    rowWrapper.children.item(i).removeChild(rowWrapper.children.item(i).lastChild);
+                }
+                diff--;
+            }
+        }
+
+        function addValues(variables, prevVariables) {
+            // add columns to existing rows
+            let diff = variables - prevVariables;
+
+            // add columns
+            // for all the current rows
+            for (let i = 0; i < prevVariables; i++) {
+                // for each new value
+                for (let j = 0; j < diff; j++) {
+                    rowWrapper.children.item(i).appendChild(createNewValue(i, j + prevVariables))
+                }
+            }
+
+            // add new rows
+            for (let i = 0; i < diff; i++) {
+                let newRow = createNewRow(i + prevVariables);
+
+                for (let j = 0; j < variables; j++) {
+                    newRow.appendChild(createNewValue(i + prevVariables, j));
+                }
+                rowWrapper.appendChild(newRow);
+            }
+        }
+
         function onVariablesChange() {
             let e = document.getElementById("variables_select");
-            let prevVariables = variables;
-            variables = e.options[e.selectedIndex].value;
+            let prevVariables = parseInt(variables);
+            variables = parseInt(e.options[e.selectedIndex].value);
 
             if (prevVariables > variables) {
                 // remove rows difference
-                let diff = prevVariables - variables;
+                removeValues(variables, prevVariables);
 
-                while (diff > 0 && rowWrapper.firstChild) {
-                    // remove the rows
-                    rowWrapper.removeChild(rowWrapper.lastChild)
-                    diff--;
-                }
-
-                // remove rows differences for columns
-                diff = prevVariables - variables;
-
-                // iterate for how many columns to remove
-                while (diff > 0 && rowWrapper.firstChild) {
-                    // iterate through the number of rows and remove last element
-                    for (let i = 0; i < variables; i++) {
-                        rowWrapper.children.item(i).removeChild(rowWrapper.children.item(i).lastChild);
-                    }
-                    diff--;
-                }
             } else if (variables > prevVariables) {
                 // add rows difference
+                addValues(variables, prevVariables);
             }
         }
 
