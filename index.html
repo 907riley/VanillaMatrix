@@ -41,6 +41,8 @@
 
         var rowWrapper = document.getElementById("wrapper_rows");
 
+        console.log(size);
+
         // setup init display 3 x 3
         for (let i = 0; i < size; i++) {
             let newRow = createNewRow(i);
@@ -84,19 +86,44 @@
 
         function keyMovement(event, i, j) {
             console.log(`keydown triggered at ${i} , ${j} ${event.key} and selection start ${event}`);
+            let currElement = document.getElementById(`row_${i}_col_${j}`);
+            let textLength = currElement.value.length;
+            let cursorCurrElement = currElement.selectionStart;
+
             switch (event.key) {
                 case "ArrowLeft":
-                    if (j > 0) {
-                        document.getElementById(`row_${i}_col_${j - 1}`).focus();
-                    } else {
-                        document.getElementById(`row_${i}_col_${size - 1}`).focus();
+                    if (cursorCurrElement === 0) {
+                        if (j > 0) {
+                            document.getElementById(`row_${i}_col_${j - 1}`).focus();
+                        } else {
+                            document.getElementById(`row_${i}_col_${size - 1}`).focus();
+                        }
                     }
                     break;
                 case "ArrowRight":
+                    if (cursorCurrElement === textLength) {
+                        if (j === size - 1) {
+                            document.getElementById(`row_${i}_col_${0}`).focus();
+                        } else {
+                            document.getElementById(`row_${i}_col_${j + 1}`).focus();
+                        }
+                    }
                     break;
                 case "ArrowUp":
+                    event.preventDefault();
+                    if (i === 0) {
+                        document.getElementById(`row_${size - 1}_col_${j}`).focus();
+                    } else {
+                        document.getElementById(`row_${i - 1}_col_${j}`).focus();
+                    }
                     break;
                 case "ArrowDown":
+                    event.preventDefault();
+                    if (i === size - 1) {
+                        document.getElementById(`row_${0}_col_${j}`).focus();
+                    } else {
+                        document.getElementById(`row_${i + 1}_col_${j}`).focus();
+                    }
                     break;
                 default:
                     break;
