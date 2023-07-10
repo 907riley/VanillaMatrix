@@ -13,7 +13,7 @@
    <div>
         <div>
             <label for="size_select">Variables:</label>
-            <select name="size" id="size_select">
+            <select name="rows" id="size_select">
                 <option value="3">3</option>
                 <option value="4">4</option>
                 <option value="5">5</option>
@@ -35,20 +35,21 @@
     </button>
     <script>
 
-        var size = 3;
+        var rows = 3;
+        var cols = 4;
         var mode = "system";
-        var matrix = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+        var matrix = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
         var variables = ['z', 'y', 'x', 'w', 'v', 'u'];
 
         var rowWrapper = document.getElementById("wrapper_rows");
 
-        console.log(size);
+        console.log(rows);
 
         // setup init display 3 x 3
-        for (let i = 0; i < size; i++) {
+        for (let i = 0; i < rows; i++) {
             let newRow = createNewRow(i);
 
-            for (let j = 0; j < size; j++) {
+            for (let j = 0; j < cols; j++) {
                 newRow.appendChild(createNewValue(i, j));
             }
 
@@ -69,8 +70,13 @@
             divWrapper.style.display = "inline"
 
             let variableLabel = document.createElement('span');
-            variableLabel.textContent = `${variables[j]}: `;
             variableLabel.className = `row_${i}_${variables[j]}`;
+
+            if (j === cols - 1) {
+                variableLabel.textContent = `=`;
+            } else {
+                variableLabel.textContent = `${variables[j]}: `;
+            }
 
             let newValue = document.createElement('input');
             newValue.className = "value";
@@ -97,13 +103,13 @@
                         if (j > 0) {
                             document.getElementById(`row_${i}_col_${j - 1}`).focus();
                         } else {
-                            document.getElementById(`row_${i}_col_${size - 1}`).focus();
+                            document.getElementById(`row_${i}_col_${cols - 1}`).focus();
                         }
                     }
                     break;
                 case "ArrowRight":
                     if (cursorCurrElement === textLength) {
-                        if (j === size - 1) {
+                        if (j === cols - 1) {
                             document.getElementById(`row_${i}_col_${0}`).focus();
                         } else {
                             document.getElementById(`row_${i}_col_${j + 1}`).focus();
@@ -113,14 +119,14 @@
                 case "ArrowUp":
                     event.preventDefault();
                     if (i === 0) {
-                        document.getElementById(`row_${size - 1}_col_${j}`).focus();
+                        document.getElementById(`row_${rows - 1}_col_${j}`).focus();
                     } else {
                         document.getElementById(`row_${i - 1}_col_${j}`).focus();
                     }
                     break;
                 case "ArrowDown":
                     event.preventDefault();
-                    if (i === size - 1) {
+                    if (i === rows - 1) {
                         document.getElementById(`row_${0}_col_${j}`).focus();
                     } else {
                         document.getElementById(`row_${i + 1}_col_${j}`).focus();
@@ -149,8 +155,8 @@
             }
         }
 
-        function removeValues(size, prevVariables) {
-            let diff = prevVariables - size;
+        function removeValues(rows, prevVariables) {
+            let diff = prevVariables - rows;
 
             while (diff > 0 && rowWrapper.firstChild) {
                 // remove the rows
@@ -160,12 +166,12 @@
             }
 
             // remove rows differences for columns
-            diff = prevVariables - size;
+            diff = prevVariables - rows;
 
             // iterate for how many columns to remove
             while (diff > 0 && rowWrapper.firstChild) {
                 // iterate through the number of rows and remove last element
-                for (let i = 0; i < size; i++) {
+                for (let i = 0; i < rows; i++) {
                     rowWrapper.children.item(i).removeChild(rowWrapper.children.item(i).lastChild);
                     matrix[i].pop();
                 }
@@ -173,9 +179,9 @@
             }
         }
 
-        function addValues(size, prevVariables) {
+        function addValues(rows, prevVariables) {
             // add columns to existing rows
-            let diff = size - prevVariables;
+            let diff = rows - prevVariables;
 
             // add columns
             // for all the current rows
@@ -193,12 +199,12 @@
                 let newRow = createNewRow(i + prevVariables);
                 let newMatrixRow = []
 
-                for (let j = 0; j < size; j++) {
+                for (let j = 0; j < rows; j++) {
                     newMatrixRow.push(0);
                 }
                 matrix.push(newMatrixRow);
 
-                for (let j = 0; j < size; j++) {
+                for (let j = 0; j < rows; j++) {
                     newRow.appendChild(createNewValue(i + prevVariables, j));
                 }
                 rowWrapper.appendChild(newRow);
@@ -206,18 +212,18 @@
         }
 
         function onSizeChange() {
-            console.log("size change");
+            console.log("rows change");
             let e = document.getElementById("size_select");
-            let prevVariables = parseInt(size);
-            size = parseInt(e.options[e.selectedIndex].value);
+            let prevVariables = parseInt(rows);
+            rows = parseInt(e.options[e.selectedIndex].value);
 
-            if (prevVariables > size) {
+            if (prevVariables > rows) {
                 // remove rows difference
-                removeValues(size, prevVariables);
+                removeValues(rows, prevVariables);
 
-            } else if (size > prevVariables) {
+            } else if (rows > prevVariables) {
                 // add rows difference
-                addValues(size, prevVariables);
+                addValues(rows, prevVariables);
             }
         }
 
@@ -228,7 +234,7 @@
         }
 
         function onCalculate() {
-            const calcMatrix = new Matrix(size, mode, matrix);
+            const calcMatrix = new Matrix(rows, mode, matrix);
             calcMatrix.gaussianElimination();
             console.log(calcMatrix.solutions_array);
         }
