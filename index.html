@@ -70,16 +70,37 @@
             variableLabel.className = `row_${i}_${variables[j]}`;
 
             let newValue = document.createElement('input');
-            newValue.type = "number";
             newValue.className = "value";
             newValue.id = "row_" + i + "_col_" + j;
             newValue.value = matrix[i][j]
-            newValue.onchange = updateValue(i, j, newValue.value)
+            newValue.onchange = () => updateValue(i, j, newValue.value)
+            newValue.onkeydown = () => keyMovement(event, i, j);
 
             divWrapper.appendChild(variableLabel);
             divWrapper.appendChild(newValue);
 
             return divWrapper;
+        }
+
+        function keyMovement(event, i, j) {
+            console.log(`keydown triggered at ${i} , ${j} ${event.key} and selection start ${event}`);
+            switch (event.key) {
+                case "ArrowLeft":
+                    if (j > 0) {
+                        document.getElementById(`row_${i}_col_${j - 1}`).focus();
+                    } else {
+                        document.getElementById(`row_${i}_col_${size - 1}`).focus();
+                    }
+                    break;
+                case "ArrowRight":
+                    break;
+                case "ArrowUp":
+                    break;
+                case "ArrowDown":
+                    break;
+                default:
+                    break;
+            }
         }
 
         function updateValue(i, j, newValue) {
