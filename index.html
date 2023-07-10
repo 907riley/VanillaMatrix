@@ -70,12 +70,12 @@
             divWrapper.style.display = "inline"
 
             let variableLabel = document.createElement('span');
-            variableLabel.className = `row_${i}_${variables[j]}`;
-
+            variableLabel.id = `row_${i}_${j}_label`;
+            console.log(`${j} ${cols}`)
             if (j === cols - 1) {
                 variableLabel.textContent = `=`;
             } else {
-                variableLabel.textContent = `${variables[j]}: `;
+                variableLabel.textContent = `${variables[j]}:`;
             }
 
             let newValue = document.createElement('input');
@@ -177,6 +177,11 @@
                 }
                 diff--;
             }
+
+            // change labels for new last col
+            for (let i = 0; i < rows; i++) {
+                document.getElementById(`row_${i}_${cols - 1}_label`).textContent = "=";
+            }
         }
 
         function addValues(rows, prevVariables) {
@@ -186,8 +191,9 @@
             // add columns
             // for all the current rows
             for (let i = 0; i < prevVariables; i++) {
+                document.getElementById(`row_${i}_${prevVariables}_label`).textContent = `${variables[prevVariables]}:`;
                 // for each new value
-                for (let j = 0; j < diff; j++) {
+                for (let j = 1; j <= diff; j++) {
                     matrix[i].push(0);
                     rowWrapper.children.item(i).appendChild(createNewValue(i, j + prevVariables))
                     console.log(`appending ${i} 0`);
@@ -199,12 +205,12 @@
                 let newRow = createNewRow(i + prevVariables);
                 let newMatrixRow = []
 
-                for (let j = 0; j < rows; j++) {
+                for (let j = 0; j < cols; j++) {
                     newMatrixRow.push(0);
                 }
                 matrix.push(newMatrixRow);
 
-                for (let j = 0; j < rows; j++) {
+                for (let j = 0; j < cols; j++) {
                     newRow.appendChild(createNewValue(i + prevVariables, j));
                 }
                 rowWrapper.appendChild(newRow);
@@ -216,6 +222,7 @@
             let e = document.getElementById("size_select");
             let prevVariables = parseInt(rows);
             rows = parseInt(e.options[e.selectedIndex].value);
+            cols = rows + 1;
 
             if (prevVariables > rows) {
                 // remove rows difference
