@@ -29,11 +29,15 @@
    </div> 
     <div id="wrapper_rows">
     </div>
+    <button id="calculate_button">
+        Calculate
+    </button>
     <script>
 
         var size = 3;
         var mode = "system";
         var matrix = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+        var variables = ['z', 'y', 'x', 'w', 'v', 'u'];
 
         var rowWrapper = document.getElementById("wrapper_rows");
 
@@ -58,15 +62,24 @@
         }
 
         function createNewValue(i, j) {
-            let newValue = document.createElement('input');
+            let divWrapper = document.createElement('div');
+            divWrapper.style.display = "inline"
 
+            let variableLabel = document.createElement('span');
+            variableLabel.textContent = `${variables[j]}: `;
+            variableLabel.className = `row_${i}_${variables[j]}`;
+
+            let newValue = document.createElement('input');
             newValue.type = "number";
             newValue.className = "value";
             newValue.id = "row_" + i + "_col_" + j;
             newValue.value = matrix[i][j]
             newValue.onchange = updateValue(i, j, newValue.value)
 
-            return newValue;
+            divWrapper.appendChild(variableLabel);
+            divWrapper.appendChild(newValue);
+
+            return divWrapper;
         }
 
         function updateValue(i, j, newValue) {
