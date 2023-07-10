@@ -7,6 +7,7 @@
     <style>
 
     </style>
+    <script src="Matrix.js"></script>
 </head>
 <body>
    <div>
@@ -226,9 +227,16 @@
             console.log(`${mode}`);
         }
 
+        function onCalculate() {
+            const calcMatrix = new Matrix(size, mode, matrix);
+            calcMatrix.gaussianElimination();
+            console.log(calcMatrix.solutions_array);
+        }
+
 
         document.getElementById("size_select").addEventListener("change", onSizeChange);
         document.getElementById("mode_select").addEventListener("change", onModeChange);
+        document.getElementById("calculate_button").addEventListener("click", onCalculate);
 
     </script>
 </body>
