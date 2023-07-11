@@ -33,11 +33,15 @@
     <button id="calculate_button">
         Calculate
     </button>
+    <button id="test_button">
+        Test
+    </button>
     <script>
 
+        // starting settings
         var rows = 3;
         var cols = 4;
-        var mode = "system";
+        var mode = "linear";
         var matrix = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
         var variables = ['z', 'y', 'x', 'w', 'v', 'u'];
 
@@ -241,16 +245,31 @@
         }
 
         function onCalculate() {
-            const calcMatrix = new Matrix(rows, mode, matrix);
+            const calcMatrix = new Matrix(rows, cols, mode, matrix);
             calcMatrix.gaussianElimination();
             console.log(calcMatrix.solutions_array);
+        }
+
+        function test() {
+            testMatrix = [
+                [1, 2, 3, -6],
+                [0, -2, 10, -8],
+                [0, 4, -2, -2]
+            ]
+
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    document.getElementById(`row_${i}_col_${j}`).value = testMatrix[i][j];
+                    matrix[i][j] = testMatrix[i][j]
+                }
+            }
         }
 
 
         document.getElementById("size_select").addEventListener("change", onSizeChange);
         document.getElementById("mode_select").addEventListener("change", onModeChange);
         document.getElementById("calculate_button").addEventListener("click", onCalculate);
-
+        document.getElementById("test_button").addEventListener("click", test);
     </script>
 </body>
 </html>
