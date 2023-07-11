@@ -13,8 +13,11 @@ class Matrix {
         switch (this.mode) {
             case "linear":
                 this.gaussianElimination();
+                console.log(this.solutions_array);
                 break;
             case "determinant":
+                this.calculate_determinant();
+                console.log(this.determinant_solution);
                 break;
             case "inverse":
                 break;
@@ -25,9 +28,10 @@ class Matrix {
     }
 
     swap(r1, c1, r2, c2) {
+        let swaps = false;
         // checking to avoid out of bounds
         if (r1 >= this.rows || r2 >= this.rows || c1 >= this.cols || c2 >= this.cols) {
-            return;
+            return swaps;
         }
 
         // check to make sure the values being swapped aren't equal
@@ -35,8 +39,10 @@ class Matrix {
             let temp = matrix[r1][c1];
             matrix[r1][c1] = matrix[r2][c2];
             matrix[r2][c2] = temp;
+            swaps = true;
         }
-
+        
+        return swaps;
     }
 
     rowSwap(r1, r2) {
@@ -68,7 +74,7 @@ class Matrix {
                 }
             }
             for (let k = i; k < n; ++k) {
-                swaps = swap(i, k, pivot_row, k);
+                swaps = this.swap(i, k, pivot_row, k);
             }
 
             for (let j = i + 1; j < n; ++j) {

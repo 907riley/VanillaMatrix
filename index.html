@@ -246,17 +246,27 @@
 
         function onCalculate() {
             const calcMatrix = new Matrix(rows, cols, mode, matrix);
-            calcMatrix.gaussianElimination();
-            console.log(calcMatrix.solutions_array);
+            calcMatrix.calculate();
         }
 
         function test() {
-            testMatrix = [
-                [1, 2, 3, -6],
-                [0, -2, 10, -8],
-                [0, 4, -2, -2]
-            ]
+            let testMatrix = []
+            if (mode === "linear") {
+                // -1, -1, -1
+                testMatrix = [
+                    [1, 2, 3, -6],
+                    [0, -2, 10, -8],
+                    [0, 4, -2, -2]
+                ]
 
+            } else if (mode === "determinant") {
+                // 49
+                testMatrix = [
+                    [2, -3, 1],
+                    [2, 0, -1],
+                    [1, 4, 5]
+                ]
+            }
             for (let i = 0; i < rows; i++) {
                 for (let j = 0; j < cols; j++) {
                     document.getElementById(`row_${i}_col_${j}`).value = testMatrix[i][j];
