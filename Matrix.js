@@ -16,10 +16,12 @@ class Matrix {
                 console.log(this.solutions_array);
                 break;
             case "determinant":
-                this.calculate_determinant();
+                this.calculateDeterminant();
                 console.log(this.determinant_solution);
                 break;
             case "inverse":
+                this.calculateInverse();
+                console.log(this.matrix);
                 break;
             default:
                 console.log("no mode match");
@@ -41,7 +43,7 @@ class Matrix {
             matrix[r2][c2] = temp;
             swaps = true;
         }
-        
+
         return swaps;
     }
 
@@ -57,7 +59,7 @@ class Matrix {
         }
     }
 
-    calculate_determinant() {
+    calculateDeterminant() {
         let n = this.rows;
         let swap_count = 0;
         let swaps = false;
@@ -102,6 +104,41 @@ class Matrix {
             this.determinant_solution *= -1;
         }
         this.determinant_solution = Math.round(this.determinant_solution);
+    }
+
+    calculateInverse() {
+        
+        // getting the rows in the correct order
+        for (let i = this.rows - 1; i > 0; --i) {
+            if (matrix[i - 1][0] < matrix[i][0]) {
+                for (let j = 0; j < 2 * this.rows; ++j) {
+                    // check to make sure the values being swapped aren't equal
+                    if (matrix[i - 1][j] != matrix[i][j]) {
+                        let temp = matrix[i - 1][j];
+                        matrix[i - 1][j] = matrix[i][j];
+                        matrix[i][j] = temp;
+                    }
+                }
+            }
+        }
+
+        for (let i = 0; i < this.rows; ++i) {
+            for (let j = 0; j < this.rows; ++j) {
+                if (i != j) {
+                    let temp = matrix[j][i] / matrix[i][i];
+                    for (let k = 0; k < 2 * this.rows; ++k) {
+                        matrix[j][k] = matrix[j][k] - matrix[i][k] * temp;
+                    }
+                }
+            }
+        }
+
+        for (let i = 0; i < this.rows; ++i) {
+            let temp = matrix[i][i];
+            for (let j = 0; j < 2 * this.rows; ++j) {
+                matrix[i][j] = matrix[i][j] / temp;
+            }
+        }
     }
 
     backTracking() {
