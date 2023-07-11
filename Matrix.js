@@ -5,6 +5,7 @@ class Matrix {
         this.mode = mode;
         this.matrix = matrix;
         this.solutions_array = new Array(rows);
+        this.determinant_solution = 0;
         console.log(`in constructor rows ${rows} and matrix ${matrix}`);
     }
 
@@ -48,6 +49,53 @@ class Matrix {
         for (let i = 0; i < this.rows; i++) {
             this.swap(i, c1, i, c2);
         }
+    }
+
+    calculate_determinant() {
+        let n = this.rows;
+        let swap_count = 0;
+        let swaps = false;
+        // go through each row
+        for (let i = 0; i < n - 1; ++i) {
+            swaps = false;
+            // attempting to find the row with the greatest value at the current column
+            // this is to fix the issue of dividing by 0 when the rows aren't in the best order already
+            let pivot_row = i;
+            for (let j = i + 1; j < n; ++j) {
+                //System.out.println("second loop");
+                if (Math.abs(this.matrix[j][i]) > Math.abs(this.matrix[pivot_row][i])) {
+                    pivot_row = j;
+                }
+            }
+            for (let k = i; k < n; ++k) {
+                swaps = swap(i, k, pivot_row, k);
+            }
+
+            for (let j = i + 1; j < n; ++j) {
+                // get the value to make two rows cancel out when multiplied
+                let temp = this.matrix[j][i]/this.matrix[i][i];
+                // go through and actually perform the gaussian elimination by solving the set of equations
+                for (let k = i; k < n; ++k) {
+                    this.matrix[j][k] = this.matrix[j][k] - this.matrix[i][k] * temp;
+                }
+            }
+
+            if (swaps) {
+                ++swap_count;
+            }
+        }
+
+        // actually calculating the determinant value
+        this.determinant_solution += this.matrix[0][0];
+        for (let i = 1; i < this.rows; ++i) {
+            this.determinant_solution *= this.matrix[i][i];
+        }
+
+        // accounting for row swaps that require a sign flip
+        if (swap_count % 2 == 1) {
+            this.determinant_solution *= -1;
+        }
+        this.determinant_solution = Math.round(this.determinant_solution);
     }
 
     backTracking() {
